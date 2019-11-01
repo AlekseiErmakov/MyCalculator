@@ -9,7 +9,7 @@ import java.util.HashSet;
 public class Calculator extends JFrame {
     private JPanel TopPanel;
     private JPanel CentrPanel;
-    private  String [][] buttonnames={{"7","8","9","+","c"},{"4","5","6","-","ce"},{"1","2","3","*","x^"},{"0","/",".","=","Gip"}};
+    private  String [][] buttonnames={{"7","8","9","+","c"},{"4","5","6","-","ce"},{"1","2","3","*","x^"},{"0",".","Gip","/","="}};
     private HashSet<String> nums;
     private HashSet<String> mathoper;
     private JButton[][] calcbuttons;
