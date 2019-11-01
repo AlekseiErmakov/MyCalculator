@@ -9,7 +9,7 @@ import java.util.HashSet;
 public class Calculator extends JFrame {
     private JPanel TopPanel;
     private JPanel CentrPanel;
-    private  String [][] buttonnames={{"7","8","9","+"},{"4","5","6","-"},{"1","2","3","*"},{"0","/",".","="}};
+    private  String [][] buttonnames={{"7","8","9","+","c"},{"4","5","6","-","ce"},{"1","2","3","*","x^"},{"0","/",".","=","Gip"}};
     private HashSet<String> nums;
     private HashSet<String> mathoper;
     private JButton[][] calcbuttons;
@@ -64,6 +64,8 @@ public class Calculator extends JFrame {
         mathoper.add("-");
         mathoper.add("*");
         mathoper.add("/");
+        mathoper.add("x^");
+        mathoper.add("Gip");
        return mathoper;
     }
     private JPanel createJpanel(JFrame frame,String layout,LayoutManager layoutManager ){
@@ -100,7 +102,12 @@ public class Calculator extends JFrame {
            String command = e.getActionCommand();
            if(nums.contains(command)){
                System.out.println("1");
-               if (precommand.equals("")){
+               if(command.equals(".")&&precommand.equals(".")){
+                   precommand=command;
+               }else if (dispview.contains(".")&& command.equals(".")){
+                   precommand=command;
+               }
+               else if (precommand.equals("")){
                    System.out.println(1.1);
                    dispview =dispview+command;
 
@@ -108,13 +115,15 @@ public class Calculator extends JFrame {
                    logdisplay.setText(logdisplaytext);
 
                    display.setText(dispview);
-                   precommand=command;}
-               else if (precommand.equals("=")){
+                   precommand=command;
+               }else if (precommand.equals("=")){
                    System.out.println(1.2);
                    dispview="";
                    logdisplaytext="";
                    dispview =dispview+command;
+                   display.setText(dispview);
                    logdisplaytext=logdisplaytext+command;
+                   precommand=command;
                } else if(nums.contains(precommand)){
                    System.out.println(1.3);
                    dispview =dispview+command;
@@ -137,13 +146,14 @@ public class Calculator extends JFrame {
            }
            else if(mathoper.contains(command)){
                System.out.println("2");
-               if (mathoper.contains(command)&&mathoper.contains(precommand)){
+
+                if(precommand.equals("")){
+                   precommand="";
+                   mathoperator="";
+                }else if(mathoper.contains(command)&&mathoper.contains(precommand)){
                    System.out.println(2.1);
-                   result=0;
-                   dispview="";
-                   logdisplaytext="";
-                   display.setText(dispview);
-                   logdisplay.setText(logdisplaytext);
+                   precommand=command;
+
 
                }else if(precommand.equals("=")){
                    System.out.println(2.2);
@@ -151,8 +161,7 @@ public class Calculator extends JFrame {
                    logdisplay.setText(logdisplaytext);
                    mathoperator=command;
                    precommand=command;
-               }
-               else if (mathoper.contains(mathoperator)) {
+               } else if (mathoper.contains(mathoperator)) {
                    System.out.println(2.3);
                    try {
                        secondDouble = Double.parseDouble(display.getText());
@@ -161,6 +170,7 @@ public class Calculator extends JFrame {
                        logdisplaytext=logdisplaytext+command;
                        logdisplay.setText(logdisplaytext);
                        mathoperator=command;
+                       precommand=command;
 
                    } catch (Exception ex) {
                        display.setText("Некорректный ввод");
@@ -183,7 +193,12 @@ public class Calculator extends JFrame {
            }
            else if(command.equals("=")){
                System.out.println("3");
-                if (mathoper.contains(mathoperator)){
+
+               if (precommand.equals("=")) {
+
+               }else if (nums.contains(precommand)&& !mathoper.contains(mathoperator)) {
+                   command = precommand;
+               }else if (mathoper.contains(mathoperator)){
                     System.out.println(3.1);
                    try{
 
@@ -201,6 +216,37 @@ public class Calculator extends JFrame {
                    }
                 }
                System.out.println(result);
+           }else if(command.equals("ce")){
+               mathoperator="";
+               precommand="";
+               dispview="";
+               logdisplaytext="";
+               display.setText(dispview);
+               logdisplay.setText(logdisplaytext);
+
+           }else if(command.equals("c")){
+               System.out.println(4);
+               if (mathoper.contains(precommand)){
+                   System.out.println(4.1);
+               }else if(nums.contains(precommand)){
+                   System.out.println(4.2);
+                   char[] dispviewChar = dispview.toCharArray();
+                   char[] logdispviewChar = logdisplaytext.toCharArray();
+                   dispview="";
+
+                   if (dispviewChar.length>0){
+                       logdisplaytext="";
+                       for (int i =0; i<logdispviewChar.length-1;i++){
+                           logdisplaytext+=String.valueOf(logdispviewChar[i]);
+                       }
+                   }
+                   for (int i =0; i<dispviewChar.length-1;i++){
+                       dispview+=String.valueOf(dispviewChar[i]);
+                   }
+
+                   display.setText(dispview);
+                   logdisplay.setText(logdisplaytext);
+               }
            }
         }
 
@@ -216,7 +262,10 @@ public class Calculator extends JFrame {
             res=result*secondDouble;
         else if(mathoperator.equals("/"))
             res=result/secondDouble;
-
-        return res;
+        else if(mathoperator.equals("x^"))
+            res = Math.pow(result,secondDouble);
+        else if (mathoperator.equals("Gip"))
+            res=  Math.hypot(result,secondDouble);
+        return (double) res;
     }
 }
